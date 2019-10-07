@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using DAL;
+using Model;
 
 namespace Repository
 {
     public class UnitOfWork : IDisposable
     {
         private MemberDbContext context = new MemberDbContext();
+        private Repository<Member> memberRepo;
 
         private bool disposed = false;
 
