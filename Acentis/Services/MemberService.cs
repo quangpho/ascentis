@@ -3,19 +3,48 @@ using System.Collections.Generic;
 using System.Text;
 using Model;
 using Repository;
+using System.Linq;
+using System.Security.Claims;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Services
 {
     public class MemberService : IMemberService
     {
         private IUnitOfWork _unitOfWork;
-        public MemberService(IUnitOfWork unitOfWork)
+        private readonly AppSettings _appSettings;
+        public MemberService(IUnitOfWork unitOfWork, IOptions<AppSettings> appSettings)
         {
             _unitOfWork = unitOfWork;
+            _appSettings = appSettings.Value;
         }
         public Member Authenticate(string email, string password)
         {
-            throw new NotImplementedException();
+            var members = _unitOfWork.MemberRepository.GetAll();
+            var member = members.SingleOrDefault(m => m.Email == email);
+            if (member == null)
+            {
+                return null;
+            }
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Key);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name,member.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(10),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            member.Token = tokenHandler.WriteToken(token);
+
+            member.Password = null;
+            return member;
         }
 
         public void Delete(object input)
