@@ -35,8 +35,6 @@ namespace Repository
 
         private bool disposed = false;
 
-        public Repository<Member> MemberRepository => throw new NotImplementedException();
-
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
