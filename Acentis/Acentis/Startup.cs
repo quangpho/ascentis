@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DAL;
 using Model;
+using Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Acentis
@@ -30,6 +31,8 @@ namespace Acentis
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<MemberDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MemberDb")));
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
