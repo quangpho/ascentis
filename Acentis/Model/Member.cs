@@ -8,26 +8,28 @@ namespace Model
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Name is required")]
         [StringLength(50)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Mobile number is required")]
         [Phone]
         public string MobileNumber { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Gender is required")]
         public byte Gender { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Date of birth is required")]
         public DateTime DOB { get; set; }
+
+        public string Token { get; set; }
 
         public string EmailOptIn { get; set; }
     }

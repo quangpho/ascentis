@@ -6,13 +6,18 @@ using Repository;
 
 namespace Services
 {
-    public class MemberService : IService<Member>
+    public class MemberService : IMemberService
     {
         private IUnitOfWork _unitOfWork;
         public MemberService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+        public Member Authenticate(string email, string password)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Delete(object input)
         {
             _unitOfWork.MemberRepository.Delete(input);
@@ -20,27 +25,36 @@ namespace Services
 
         public IEnumerable<Member> GetAll()
         {
-            _unitOfWork.MemberRepository.GetAll();
+            return _unitOfWork.MemberRepository.GetAll();
         }
 
         public Member GetOne(object input)
         {
-            throw new NotImplementedException();
+            return _unitOfWork.MemberRepository.GetOne(input);
         }
 
         public void Insert(Member input)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(input.Password))
+            {
+                throw new Exception("Password is required!");
+            }
+            var member = _unitOfWork.MemberRepository.GetOne(input.Email);
+            if (member != null)
+            {
+                throw new Exception("Email is already taken!");
+            }
+            _unitOfWork.MemberRepository.Insert(input);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _unitOfWork.Save();
         }
 
         public void Update(Member input)
         {
-            throw new NotImplementedException();
+            _unitOfWork.MemberRepository.Update(input);
         }
     }
 }

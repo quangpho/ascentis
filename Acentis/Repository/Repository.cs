@@ -38,7 +38,7 @@ namespace Repository
 
         public void Update(T input)
         {
-            db.Entry(input).State = EntityState.Modified;
+            dbSet.Update(input);
         }
     }
 }

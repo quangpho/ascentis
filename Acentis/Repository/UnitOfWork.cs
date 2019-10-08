@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DAL;
+﻿using DAL;
 using Model;
+using System;
 
 namespace Repository
 {
