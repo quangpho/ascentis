@@ -1,9 +1,10 @@
-﻿using DAL;
+﻿using DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace Repository
+namespace DAL.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -15,25 +16,25 @@ namespace Repository
             db = dbContext;
             dbSet = db.Set<T>();
         }
-        public void Delete(object input)
+        public async Task Delete(object input)
         {
-            T entity = dbSet.Find(input);
+            T entity = await dbSet.FindAsync(input);
             dbSet.Remove(entity);
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return dbSet.ToList();
+            return await dbSet.ToListAsync();
         }
 
-        public T GetOne(object input)
+        public async Task<T> GetOne(object input)
         {
-            return dbSet.Find(input);
+            return await dbSet.FindAsync(input);
         }
 
-        public void Insert(T input)
+        public async Task Insert(T input)
         {
-            dbSet.Add(input);
+            await dbSet.AddAsync(input);
         }
 
         public void Update(T input)

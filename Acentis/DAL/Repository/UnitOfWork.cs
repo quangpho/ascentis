@@ -1,8 +1,9 @@
-﻿using DAL;
-using Model;
+﻿using DAL.Context;
+using DAL.Model;
 using System;
+using System.Threading.Tasks;
 
-namespace Repository
+namespace DAL.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -26,9 +27,9 @@ namespace Repository
             }
         }
 
-        public void Save()
+        public async Task Save()
         {
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         private bool disposed = false;

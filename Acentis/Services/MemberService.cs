@@ -1,29 +1,29 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Model;
-using Repository;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using DAL.Repository;
+using Helpers;
+using DAL.Model;
 
 namespace Services
 {
     public class MemberService : IMemberService
     {
         private IUnitOfWork _unitOfWork;
-        private readonly AppSettings _appSettings;
-        public MemberService(IUnitOfWork unitOfWork, IOptions<AppSettings> appSettings)
+        private readonly AppSetings _appSettings;
+        public MemberService(IUnitOfWork unitOfWork, IOptions<AppSetings> appSettings)
         {
             _unitOfWork = unitOfWork;
             _appSettings = appSettings.Value;
         }
         public Member Authenticate(string email, string password)
         {
-            var members = _unitOfWork.MemberRepository.GetAll();
+            var members = _unitOfWork.MemberRepository.GetAllAsync();
             var member = members.SingleOrDefault(m => m.Email == email);
             if (member == null)
             {
@@ -54,7 +54,7 @@ namespace Services
 
         public IEnumerable<Member> GetAll()
         {
-            return _unitOfWork.MemberRepository.GetAll();
+            return _unitOfWork.MemberRepository.GetAllAsync();
         }
 
         public Member GetOne(object input)
@@ -85,5 +85,6 @@ namespace Services
         {
             _unitOfWork.MemberRepository.Update(input);
         }
+
     }
 }
