@@ -32,16 +32,19 @@ namespace Ascentis.Services
             }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Key);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name,member.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = new JwtSecurityToken
+                (
+                    issuer: "http://localhost:59726/",
+                    audience: "http://localhost:59726/",
+                    claims: new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name,member.Id.ToString())
+                    },
+                    notBefore: new DateTimeOffset(DateTime.Now).DateTime,
+                    expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                );
+           
             var result = tokenHandler.WriteToken(token);
 
             return result;

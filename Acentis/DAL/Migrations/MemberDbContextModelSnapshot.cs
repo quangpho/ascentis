@@ -19,7 +19,7 @@ namespace Ascentis.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DAL.Model.Member", b =>
+            modelBuilder.Entity("Ascentis.DAL.Model.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,8 +43,6 @@ namespace Ascentis.DAL.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired();
-
-                    b.Property<string>("Token");
 
                     b.HasKey("Id");
 

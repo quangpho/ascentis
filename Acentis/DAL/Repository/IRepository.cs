@@ -11,7 +11,7 @@ namespace Ascentis.DAL.Repository
         Task<T> GetAsync(object input);
         Task InsertAsync(T input);
         void Update(T input);
-        Task DeleteAsync(object input);
+        void Delete(T input);
         Task<T> FindAsync(Expression<Func<T, bool>> where);
     }
 }

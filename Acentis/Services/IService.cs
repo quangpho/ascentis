@@ -8,7 +8,7 @@ namespace Ascentis.Services
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetAsync(object input);
         Task<T> InsertAsync(T input);
-        Task UpdateAsync(T input);
-        Task DeleteAsync(object input);
+        Task<T> UpdateAsync(T input);
+        Task Delete(object input);
     }
 }

@@ -22,20 +22,39 @@ namespace Ascentis.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task DeleteAsync(object input)
+        public async Task Delete(object input)
         {
-            await _unitOfWork.MemberRepository.DeleteAsync(input);
+            var entity = await _unitOfWork.MemberRepository.GetAsync(input);
+            if (entity == null)
+            {
+                throw new Exception("Member is not found");
+            }
+            _unitOfWork.MemberRepository.Delete(entity);
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Member>> GetAllAsync()
         {
-            return await _unitOfWork.MemberRepository.GetAllAsync();
+            var members = await _unitOfWork.MemberRepository.GetAllAsync();
+            if (members != null)
+            {
+                members = members.Select(m =>
+                {
+                    m.Password = null;
+                    return m;
+                });
+            }
+            return members;
         }
 
         public async Task<Member> GetAsync(object input)
         {
-            return await _unitOfWork.MemberRepository.GetAsync(input);
+            var member = await _unitOfWork.MemberRepository.GetAsync(input);
+            if (member != null)
+            {
+                member.Password = null;
+            }
+            return member;
         }
 
         public async Task<Member> InsertAsync(Member input)
@@ -54,10 +73,23 @@ namespace Ascentis.Services
             return input;
         }
 
-        public async Task UpdateAsync(Member input)
+        public async Task<Member> UpdateAsync(Member input)
         {
-            _unitOfWork.MemberRepository.Update(input);
+            var member = await _unitOfWork.MemberRepository.GetAsync(input.Id);
+
+            if (member == null)
+            {
+                return null;
+            }
+            member.DOB = input.DOB;
+            member.EmailOptIn = input.EmailOptIn;
+            member.Gender = input.Gender;
+            member.MobileNumber = input.MobileNumber;
+            member.Name = input.Name;
+
+            _unitOfWork.MemberRepository.Update(member);
             await _unitOfWork.SaveChangesAsync();
+            return member;
         }
     }
 }

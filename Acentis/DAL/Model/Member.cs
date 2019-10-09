@@ -29,8 +29,6 @@ namespace Ascentis.DAL.Model
         [Required(ErrorMessage = "Date of birth is required")]
         public DateTime DOB { get; set; }
 
-        public string Token { get; set; }
-
         public string EmailOptIn { get; set; }
     }
 }

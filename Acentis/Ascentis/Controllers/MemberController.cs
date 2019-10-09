@@ -21,7 +21,7 @@ namespace Ascentis.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("/member/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterMember([FromBody]Member member)
         {
             try
@@ -35,7 +35,7 @@ namespace Ascentis.API.Controllers
             }
         }
 
-        [HttpGet("/member")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetAllMembers()
         {
             var members = await _memberService.GetAllAsync();
@@ -43,41 +43,43 @@ namespace Ascentis.API.Controllers
             {
                 return NotFound();
             }
-            members = members.Select(m =>
-            {
-                m.Password = null;
-                return m;
-            });
             return Ok(members);
         }
 
-        [HttpGet("/member/{id}")]
-        public async Task<IActionResult> GetMember([FromBody]int id)
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetMember(int id)
         {
             var member = await _memberService.GetAsync(id);
             if (member == null)
             {
                 return NotFound();
             }
-            member.Password = null;
             return Ok(member);
         }
 
-        [HttpPut("/member/update")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateMember([FromBody]Member updatedMember)
         {
-            var member = await _memberService.GetAsync(updatedMember.Id);
-            if (member == null)
+            var result = await _memberService.UpdateAsync(updatedMember);
+            if (result == null)
             {
                 return NotFound();
             }
-            member.DOB = updatedMember.DOB;
-            member.EmailOptIn = updatedMember.EmailOptIn;
-            member.Gender = updatedMember.Gender;
-            member.MobileNumber = updatedMember.MobileNumber;
-            member.Name = member.Name;
-            await _memberService.UpdateAsync(member);
-            return Ok();
+            return Ok(result);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteMember(int id)
+        {
+            try
+            {
+                await _memberService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

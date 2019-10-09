@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Ascentis.Services;
 using System.Text;
+using System;
 
 namespace Ascentis.API
 {
@@ -46,26 +47,32 @@ namespace Ascentis.API
 
             var appSettings = appSettingsSection.Get<AppSetings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Key);
-            services.AddAuthentication(x =>
+            services.AddAuthentication(token =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                token.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                token.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(token =>
             {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                token.RequireHttpsMetadata = false;
+                token.SaveToken = true;
+                token.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidIssuer = "http://localhost:59726/",
+                    ValidateAudience = true,
+                    ValidAudience = "http://localhost:59726/",
+                    RequireExpirationTime = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IMemberService, MemberService>();
+            services.AddTransient<IAuthenticateService, AuthenticateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ascentis.DAL.Migrations
 {
     [DbContext(typeof(MemberDbContext))]
-    [Migration("20191009075742_initial-migration")]
+    [Migration("20191009160127_initial-migration")]
     partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace Ascentis.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DAL.Model.Member", b =>
+            modelBuilder.Entity("Ascentis.DAL.Model.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,8 +45,6 @@ namespace Ascentis.DAL.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired();
-
-                    b.Property<string>("Token");
 
                     b.HasKey("Id");
 

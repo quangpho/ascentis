@@ -20,7 +20,6 @@ namespace Ascentis.DAL.Migrations
                     MobileNumber = table.Column<string>(nullable: false),
                     Gender = table.Column<byte>(nullable: false),
                     DOB = table.Column<DateTime>(nullable: false),
-                    Token = table.Column<string>(nullable: true),
                     EmailOptIn = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

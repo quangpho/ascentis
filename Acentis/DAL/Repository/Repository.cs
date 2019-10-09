@@ -18,10 +18,9 @@ namespace Ascentis.DAL.Repository
             db = dbContext;
             dbSet = db.Set<T>();
         }
-        public async Task DeleteAsync(object input)
+        public void Delete(T input)
         {
-            T entity = await dbSet.FindAsync(input);
-            dbSet.Remove(entity);
+            dbSet.Remove(input);
         }
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> where)

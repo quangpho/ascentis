@@ -13,15 +13,20 @@ namespace Ascentis.API.Controllers
     {
         private IAuthenticateService _authenticateService;
 
-        [HttpPost("/member/authenticate")]
+        public AuthenticateController(IAuthenticateService authenticateService)
+        {
+            _authenticateService = authenticateService;
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Authenticate([FromBody]LoginModel login)
         {
-            var member = await _authenticateService.AuthenticateAsync(login.Email, login.Password);
-            if (member == null)
+            var token = await _authenticateService.AuthenticateAsync(login.Email, login.Password);
+            if (token == null)
             {
                 return BadRequest(new { message = "Email or Password is incorrect" });
             }
-            return Ok(member);
+            return Ok(token);
         }
     }
 }
