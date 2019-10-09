@@ -6,85 +6,58 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using DAL.Repository;
-using Helpers;
-using DAL.Model;
+using Ascentis.DAL.Repository;
+using Ascentis.Helpers;
+using Ascentis.DAL.Model;
+using System.Threading.Tasks;
 
-namespace Services
+namespace Ascentis.Services
 {
     public class MemberService : IMemberService
     {
         private IUnitOfWork _unitOfWork;
-        private readonly AppSetings _appSettings;
+
         public MemberService(IUnitOfWork unitOfWork, IOptions<AppSetings> appSettings)
         {
             _unitOfWork = unitOfWork;
-            _appSettings = appSettings.Value;
         }
-        public Member Authenticate(string email, string password)
+
+        public async Task DeleteAsync(object input)
         {
-            var members = _unitOfWork.MemberRepository.GetAllAsync();
-            var member = members.SingleOrDefault(m => m.Email == email);
-            if (member == null)
-            {
-                return null;
-            }
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Key);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name,member.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            member.Token = tokenHandler.WriteToken(token);
-
-            member.Password = null;
-            return member;
+            await _unitOfWork.MemberRepository.DeleteAsync(input);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Delete(object input)
+        public async Task<IEnumerable<Member>> GetAllAsync()
         {
-            _unitOfWork.MemberRepository.Delete(input);
+            return await _unitOfWork.MemberRepository.GetAllAsync();
         }
 
-        public IEnumerable<Member> GetAll()
+        public async Task<Member> GetAsync(object input)
         {
-            return _unitOfWork.MemberRepository.GetAllAsync();
+            return await _unitOfWork.MemberRepository.GetAsync(input);
         }
 
-        public Member GetOne(object input)
-        {
-            return _unitOfWork.MemberRepository.GetOne(input);
-        }
-
-        public void Insert(Member input)
+        public async Task<Member> InsertAsync(Member input)
         {
             if (string.IsNullOrWhiteSpace(input.Password))
             {
                 throw new Exception("Password is required!");
             }
-            var member = _unitOfWork.MemberRepository.GetOne(input.Email);
+            var member = _unitOfWork.MemberRepository.GetAllAsync().Result.FirstOrDefault(m => m.Email == input.Email);
             if (member != null)
             {
                 throw new Exception("Email is already taken!");
             }
-            _unitOfWork.MemberRepository.Insert(input);
+            await _unitOfWork.MemberRepository.InsertAsync(input);
+            await _unitOfWork.SaveChangesAsync();
+            return input;
         }
 
-        public void Save()
-        {
-            _unitOfWork.Save();
-        }
-
-        public void Update(Member input)
+        public async Task UpdateAsync(Member input)
         {
             _unitOfWork.MemberRepository.Update(input);
+            await _unitOfWork.SaveChangesAsync();
         }
-
     }
 }

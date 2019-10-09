@@ -1,9 +1,9 @@
-﻿using DAL.Context;
-using DAL.Model;
+﻿using Ascentis.DAL.Context;
+using Ascentis.DAL.Model;
 using System;
 using System.Threading.Tasks;
 
-namespace DAL.Repository
+namespace Ascentis.DAL.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -27,7 +27,7 @@ namespace DAL.Repository
             }
         }
 
-        public async Task Save()
+        public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();
         }

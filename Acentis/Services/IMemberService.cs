@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Model;
+﻿using Ascentis.DAL.Model;
 
-namespace Services
+namespace Ascentis.Services
 {
     public interface IMemberService : IService<Member>
     {
-        Member Authenticate(string email, string password);
     }
 }
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Helpers
+﻿namespace Ascentis.Helpers
 {
     public class AppSetings
     {

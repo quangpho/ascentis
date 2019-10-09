@@ -1,14 +1,18 @@
-﻿using DAL.Context;
-using DAL.Repository;
+﻿using Ascentis.DAL.Context;
+using Ascentis.DAL.Repository;
+using Ascentis.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Services;
+using Microsoft.IdentityModel.Tokens;
+using Ascentis.Services;
+using System.Text;
 
-namespace Acentis
+namespace Ascentis.API
 {
     public class Startup
     {
@@ -25,7 +29,40 @@ namespace Acentis
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // Conection strings
             services.AddDbContext<MemberDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MemberDb")));
+
+            services.AddCors(option =>
+            {
+                option.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
+            // jwt authentication
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSetings>(appSettingsSection);
+
+            var appSettings = appSettingsSection.Get<AppSetings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Key);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IMemberService, MemberService>();
@@ -43,7 +80,7 @@ namespace Acentis
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

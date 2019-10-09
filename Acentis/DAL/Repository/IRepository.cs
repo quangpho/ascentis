@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace DAL.Repository
+namespace Ascentis.DAL.Repository
 {
     public interface IRepository<T>
     {
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetOne(object input);
-        Task Insert(T input);
+        Task<T> GetAsync(object input);
+        Task InsertAsync(T input);
         void Update(T input);
-        Task Delete(object input);
+        Task DeleteAsync(object input);
+        Task<T> FindAsync(Expression<Func<T, bool>> where);
     }
 }

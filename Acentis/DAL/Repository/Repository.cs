@@ -1,10 +1,12 @@
-﻿using DAL.Context;
+﻿using Ascentis.DAL.Context;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace DAL.Repository
+namespace Ascentis.DAL.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -16,10 +18,15 @@ namespace DAL.Repository
             db = dbContext;
             dbSet = db.Set<T>();
         }
-        public async Task Delete(object input)
+        public async Task DeleteAsync(object input)
         {
             T entity = await dbSet.FindAsync(input);
             dbSet.Remove(entity);
+        }
+
+        public async Task<T> FindAsync(Expression<Func<T, bool>> where)
+        {
+            return await dbSet.FirstOrDefaultAsync(where);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -27,12 +34,12 @@ namespace DAL.Repository
             return await dbSet.ToListAsync();
         }
 
-        public async Task<T> GetOne(object input)
+        public async Task<T> GetAsync(object input)
         {
             return await dbSet.FindAsync(input);
         }
 
-        public async Task Insert(T input)
+        public async Task InsertAsync(T input)
         {
             await dbSet.AddAsync(input);
         }

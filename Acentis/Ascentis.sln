@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acentis", "Acentis\Acentis.csproj", "{806931EA-5B64-451E-B0E4-551666B5A651}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ascentis.API", "Ascentis\Ascentis.API.csproj", "{806931EA-5B64-451E-B0E4-551666B5A651}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{3A28E106-9C8A-4D3C-9AA1-A55C34B99843}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ascentis.DAL", "DAL\Ascentis.DAL.csproj", "{3A28E106-9C8A-4D3C-9AA1-A55C34B99843}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{772C2DA8-CB9A-4876-91B2-3C5819E873AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ascentis.Services", "Services\Ascentis.Services.csproj", "{772C2DA8-CB9A-4876-91B2-3C5819E873AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{FFF96620-10BD-4B23-8091-7FB3CC9D867B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ascentis.Helpers", "Helpers\Ascentis.Helpers.csproj", "{FFF96620-10BD-4B23-8091-7FB3CC9D867B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

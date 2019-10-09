@@ -1,12 +1,12 @@
-﻿using DAL.Model;
+﻿using Ascentis.DAL.Model;
 using System;
 using System.Threading.Tasks;
 
-namespace DAL.Repository
+namespace Ascentis.DAL.Repository
 {
     public interface IUnitOfWork : IDisposable
     {
         Repository<Member> MemberRepository { get; }
-        Task Save();
+        Task SaveChangesAsync();
     }
 }

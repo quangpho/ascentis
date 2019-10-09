@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DAL.Model
+namespace Ascentis.DAL.Model
 {
     public class Member
     {

@@ -1,7 +1,7 @@
-﻿using DAL.Model;
+﻿using Ascentis.DAL.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Context
+namespace Ascentis.DAL.Context
 {
     public class MemberDbContext : DbContext
     {

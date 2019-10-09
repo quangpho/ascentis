@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Ascentis.DAL.Model;
+using Ascentis.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Services;
-using DAL.Model;
 
-namespace Acentis.Controllers
+namespace Ascentis.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -24,29 +22,23 @@ namespace Acentis.Controllers
 
         [AllowAnonymous]
         [HttpPost("/member/register")]
-        public IActionResult RegisterMember([FromBody]Member member)
+        public async Task<IActionResult> RegisterMember([FromBody]Member member)
         {
-            _memberService.Insert(member);
-            _memberService.Save();
-            return Ok();
-        }
-
-        [AllowAnonymous]
-        [HttpPost("/member/authenticate")]
-        public IActionResult Authenticate([FromBody]Member memberAuthen)
-        {
-            var member = _memberService.Authenticate(memberAuthen.Email, memberAuthen.Password);
-            if (member == null)
+            try
             {
-                return BadRequest(new { message = "Email or Password is incorrect" });
+                await _memberService.InsertAsync(member);
+                return Ok();
             }
-            return Ok(member);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("/member")]
-        public IActionResult GetAllMembers()
+        public async Task<IActionResult> GetAllMembers()
         {
-            var members = _memberService.GetAll();
+            var members = await _memberService.GetAllAsync();
             if (members == null)
             {
                 return NotFound();
@@ -60,9 +52,9 @@ namespace Acentis.Controllers
         }
 
         [HttpGet("/member/{id}")]
-        public IActionResult GetMember([FromBody]int id)
+        public async Task<IActionResult> GetMember([FromBody]int id)
         {
-            var member = _memberService.GetOne(id);
+            var member = await _memberService.GetAsync(id);
             if (member == null)
             {
                 return NotFound();
@@ -72,9 +64,9 @@ namespace Acentis.Controllers
         }
 
         [HttpPut("/member/update")]
-        public IActionResult UpdateMember([FromBody]Member updatedMember)
+        public async Task<IActionResult> UpdateMember([FromBody]Member updatedMember)
         {
-            var member = _memberService.GetOne(updatedMember.Id);
+            var member = await _memberService.GetAsync(updatedMember.Id);
             if (member == null)
             {
                 return NotFound();
@@ -84,8 +76,7 @@ namespace Acentis.Controllers
             member.Gender = updatedMember.Gender;
             member.MobileNumber = updatedMember.MobileNumber;
             member.Name = member.Name;
-            _memberService.Update(member);
-            _memberService.Save();
+            await _memberService.UpdateAsync(member);
             return Ok();
         }
     }
