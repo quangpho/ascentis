@@ -2,6 +2,7 @@
 using Ascentis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Ascentis.API.Controllers
@@ -18,15 +19,19 @@ namespace Ascentis.API.Controllers
             _authenticateService = authenticateService;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody]LoginModel login)
         {
-            var token = await _authenticateService.AuthenticateAsync(login.Email, login.Password);
-            if (token == null)
+            try
             {
-                return BadRequest(new { message = "Email or Password is incorrect" });
+                var token = await _authenticateService.AuthenticateAsync(login.Email, login.Password);
+                return Ok(token);
             }
-            return Ok(token);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

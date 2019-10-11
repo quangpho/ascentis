@@ -28,7 +28,7 @@ namespace Ascentis.Services
             var member = await _unitOfWork.MemberRepository.FindAsync(m => m.Email == email && m.Password == password);
             if (member == null)
             {
-                return null;
+                throw new Exception("Email or Password is incorrect");
             }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Key);
